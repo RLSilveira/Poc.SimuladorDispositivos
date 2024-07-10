@@ -30,8 +30,6 @@ public class IndexModel : PageModel
 
         await _ioTHubService.SendDeviceToCloudMessageAsync(device, message);
 
-
-
         return RedirectToPage();
     }
 }
