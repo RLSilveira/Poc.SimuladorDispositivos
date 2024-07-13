@@ -1,24 +1,56 @@
 @page
 @{
-    ViewData["Title"] = "Membros do Grupo";
+    ViewData["Title"] = "Informações do Projeto";
 
     var teamMembers = new[]
     {
-        new { Name = "Airon Selistre" },
-        new { Name = "Alex PErtille" },
-        new { Name = "Francisco Maier" },
-        new { Name = "Jonathan Azevedo" },
-        new { Name = "Rodrigo Silveira" },
-    };
+new { Name = "Airon Selistre" },
+new { Name = "Alex PErtille" },
+new { Name = "Francisco Maier" },
+new { Name = "Jonathan Azevedo" },
+new { Name = "Rodrigo Silveira" },
+};
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-6">
 
-<ul>
-    @foreach (var member in teamMembers)
-    {
-        <li>
-            @member.Name
-        </li>
-    }
-</ul>
+        <h1>Membros do Grupo</h1>
+
+        <ul>
+            @foreach (var member in teamMembers)
+            {
+                <li>
+                    @member.Name
+                </li>
+            }
+        </ul>
+
+        <hr />
+        <h1>Dados Técnicos</h1>
+        <p>
+            Github: <a href="https://github.com/RLSilveira/Poc.SimuladorDispositivos">
+                https://github.com/RLSilveira/Poc.SimuladorDispositivos
+            </a>
+        </p>
+        <p>
+            Instruções para execução:
+            <code>
+                dotnet run  
+            </code>
+        </p>
+    </div>
+    <div class="col-md-6">
+        <p>
+            <a href="https://poc-simulador-dispositivos-web-app.azurewebsites.net/">
+                <img src="~/qrcode_poc-simulador-dispositivos-web-app.azurewebsites.net.png" alt="qr code"
+                    class="img-fluid" />
+            </a>
+        </p>
+        <p>
+            <a href="https://poc-simulador-dispositivos-web-app.azurewebsites.net/">
+                https://poc-simulador-dispositivos-web-app.azurewebsites.net/
+            </a>
+        </p>
+    </div>
+</div>
