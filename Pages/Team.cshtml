@@ -1,0 +1,24 @@
+@page
+@{
+    ViewData["Title"] = "Membros do Grupo";
+
+    var teamMembers = new[]
+    {
+        new { Name = "Airon Selistre" },
+        new { Name = "Alex PErtille" },
+        new { Name = "Francisco Maier" },
+        new { Name = "Jonathan Azevedo" },
+        new { Name = "Rodrigo Silveira" },
+    };
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<ul>
+    @foreach (var member in teamMembers)
+    {
+        <li>
+            @member.Name
+        </li>
+    }
+</ul>

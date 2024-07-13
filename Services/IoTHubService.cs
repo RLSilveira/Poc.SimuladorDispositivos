@@ -1,16 +1,15 @@
 using System.Text;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using Poc.SimuladorDispositivos.Interfaces.Services;
-using Poc.SimuladorDispositivos.Pages;
+using Poc.SimuladorDispositivos.Models;
 
 namespace Poc.SimuladorDispositivos.Services;
 
 public class IoTHubService(IConfiguration configuration) : IIoTHubService
 {
-    private readonly RegistryManager _registryManager = RegistryManager.CreateFromConnectionString(configuration.GetValue<string>("IoTHubConnectionString"));
+    private readonly RegistryManager _registryManager = RegistryManager.CreateFromConnectionString(configuration["IoTHubConnectionString"]);
 
     public async Task<Device?> AddDeviceAsync(string deviceId)
     {
@@ -29,16 +28,14 @@ public class IoTHubService(IConfiguration configuration) : IIoTHubService
     public async Task SendDeviceToCloudMessageAsync(Device? device, string message)
     {
         ArgumentNullException.ThrowIfNull(device, nameof(device));
+        
+        var deviceConnectionString = BuildConnectionString(device);
 
-        var iotHubHostName = "HubIoTSistemaMES.azure-devices.net"; //configuration.GetValue<string>("IoTHubHostName");
-        var deviceId = device.Id;
-        var primaryKey = device.Authentication.SymmetricKey.PrimaryKey;
+        var deviceClient = DeviceClient.CreateFromConnectionString(
+            deviceConnectionString,
+            Microsoft.Azure.Devices.Client.TransportType.Mqtt);
 
-        var deviceConnectionString = $"HostName={iotHubHostName};DeviceId={deviceId};SharedAccessKey={primaryKey}";
-
-        var deviceClient = DeviceClient.CreateFromConnectionString(deviceConnectionString, Microsoft.Azure.Devices.Client.TransportType.Mqtt);
-
-        var body = new Medicao(deviceId, DateTime.Now, message);
+        var body = new DeviceMeasurement(device.Id, DateTime.Now, message);
 
         var messagePayload = new Microsoft.Azure.Devices.Client.Message(
             Encoding.UTF8.GetBytes(
@@ -47,5 +44,14 @@ public class IoTHubService(IConfiguration configuration) : IIoTHubService
         await deviceClient.SendEventAsync(messagePayload);
     }
 
+    private string BuildConnectionString(Device device)
+    {
+        var iotHubHostName = configuration.GetValue<string>("IoTHubHostName");
+        var deviceId = device.Id;
+        var primaryKey = device.Authentication.SymmetricKey.PrimaryKey;
 
+        var deviceConnectionString = $"HostName={iotHubHostName};DeviceId={deviceId};SharedAccessKey={primaryKey}";
+        
+        return deviceConnectionString;
+    }
 }

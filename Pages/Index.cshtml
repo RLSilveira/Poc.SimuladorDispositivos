@@ -5,8 +5,8 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Tarefa 1 | Consumindo uma API para um Produto</h1>
+    <p>PROJETO E ARQUITETURA DE SOFTWARE</p>
 </div>
 
 <form method="post">
@@ -33,12 +33,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var medicao in Model.Medicoes)
+        @foreach (var medicao in Model.Measurement)
         {
             <tr>
-                <td>@medicao.Dispositivo</td>
-                <td>@medicao.Data</td>
-                <td>@medicao.Valor</td>
+                <td>@medicao.DeviceIdentifier</td>
+                <td>@medicao.Timestamp</td>
+                <td>@medicao.Value</td>
             </tr>
         }
     </tbody>

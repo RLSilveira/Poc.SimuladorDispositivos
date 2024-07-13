@@ -1,9 +1,7 @@
-using System.Buffers.Text;
 using System.Text;
-using System.Text.Unicode;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
-using Poc.SimuladorDispositivos.Pages;
+using Poc.SimuladorDispositivos.Models;
 
 public partial class CosmosDbService
 {
@@ -18,25 +16,26 @@ public partial class CosmosDbService
         _container = client.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<Medicao>> ObterMedicoes()
+    public async Task<IEnumerable<DeviceMeasurement>> GetMeasurements()
     {
         var query = _container.GetItemQueryIterator<CosmosDbEntity>();
-        var results = new List<Medicao>();
+        var results = new List<DeviceMeasurement>();
         while (query.HasMoreResults)
         {
             var response = await query.ReadNextAsync();
             results.AddRange(
-                response.ToList().Select(x => DeserializarMedicaoBase64(x.Body)));
+                response.ToList().Select(x =>
+                    ParseBase64Measurement(x.Body)));
         }
         return results;
     }
 
-    private Medicao DeserializarMedicaoBase64(string base64)
+    private static DeviceMeasurement ParseBase64Measurement(string base64)
     {
         var bytes = Convert.FromBase64String(base64);
         var json = Encoding.UTF8.GetString(bytes);
-        
-        return JsonConvert.DeserializeObject<Medicao>(json) 
+
+        return JsonConvert.DeserializeObject<DeviceMeasurement>(json)
             ?? throw new Exception("Erro ao deserializar a medição");
     }
 
